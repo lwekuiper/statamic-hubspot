@@ -1,0 +1,42 @@
+tabs:
+  general:
+    display: 'General'
+    sections:
+      -
+        fields:
+          -
+            handle: email_field
+            field:
+              display: 'Email Field'
+              instructions: 'The form field that contains the email of the subscriber.'
+              type: statamic_form_fields
+              validate: 'required'
+              width: 50
+          -
+            handle: consent_field
+            field:
+              display: 'Consent Field'
+              instructions: 'The form field that contains the consent of the subscriber.'
+              type: statamic_form_fields
+              width: 50
+          -
+            handle: contact_properties
+            field:
+              display: 'Contact Properties'
+              instructions: 'Add the form fields you want to map to HubSpot contact properties.'
+              type: grid
+              mode: table
+              listable: hidden
+              fullscreen: false
+              add_row: 'Add Contact Property'
+              fields:
+                -
+                  handle: statamic_field
+                  field:
+                    display: 'Form Field'
+                    type: statamic_form_fields
+                -
+                  handle: hubspot_field
+                  field:
+                    display: 'HubSpot Property'
+                    type: hubspot_contact_properties
