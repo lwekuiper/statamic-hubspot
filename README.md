@@ -31,10 +31,10 @@ The package will automatically register itself.
 
 ## Configuration
 
-Set your HubSpot API Key in your `.env` file.
+Set your HubSpot Access Token in your `.env` file.
 
 ```yaml
-HUBSPOT_API_KEY=your-private-app-token-here
+HUBSPOT_ACCESS_TOKEN=your-private-app-token-here
 ```
 
 ## Pro edition
@@ -52,4 +52,4 @@ After purchasing the pro edition, you can enable it by setting the edition of th
 
 ## How to Use
 
-Create your Statamic [forms](https://statamic.dev/forms#content) as usual. Don't forget to add the consent field to your blueprint.
+Create your Statamic [forms](https://statamic.dev/forms#content) as usual and add the HubSpot configuration.
