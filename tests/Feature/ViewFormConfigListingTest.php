@@ -9,7 +9,6 @@ use PHPUnit\Framework\Attributes\Test;
 use Statamic\Facades\Form;
 use Statamic\Facades\Site;
 use Statamic\Facades\User;
-use Statamic\Support\Arr;
 use Statamic\Testing\Concerns\PreventsSavingStacheItemsToDisk;
 
 class ViewFormConfigListingTest extends TestCase
@@ -56,15 +55,13 @@ class ViewFormConfigListingTest extends TestCase
         $formConfig->save();
 
         $this->actingAs($user)
-            ->get(cp_route('hubspot.index'))
+            ->getJson(cp_route('hubspot.index'))
             ->assertOk()
-            ->assertViewHas('formConfigs', fn ($formConfigs) => $formConfigs->count() === 2)
-            ->assertViewHas('formConfigs', function ($formConfigs) {
-                return Arr::get($formConfigs, '0.title') === 'Form One'
-                    && Arr::get($formConfigs, '0.edit_url') === url('/cp/hubspot/form_one/edit')
-                    && Arr::get($formConfigs, '1.title') === 'Form Two'
-                    && Arr::get($formConfigs, '1.edit_url') === url('/cp/hubspot/form_two/edit');
-            });
+            ->assertJsonCount(2, 'formConfigs')
+            ->assertJson(['formConfigs' => [
+                ['title' => 'Form One', 'edit_url' => url('/cp/hubspot/form_one/edit')],
+                ['title' => 'Form Two', 'edit_url' => url('/cp/hubspot/form_two/edit')],
+            ]]);
     }
 
     #[Test]
@@ -95,14 +92,12 @@ class ViewFormConfigListingTest extends TestCase
         $formConfig->save();
 
         $this->actingAs($user)
-            ->get(cp_route('hubspot.index'))
+            ->getJson(cp_route('hubspot.index'))
             ->assertOk()
-            ->assertViewHas('formConfigs', fn ($formConfigs) => $formConfigs->count() === 2)
-            ->assertViewHas('formConfigs', function ($formConfigs) {
-                return Arr::get($formConfigs, '0.title') === 'Form One'
-                    && Arr::get($formConfigs, '0.edit_url') === url('/cp/hubspot/form_one/edit?site=nl')
-                    && Arr::get($formConfigs, '1.title') === 'Form Two'
-                    && Arr::get($formConfigs, '1.edit_url') === url('/cp/hubspot/form_two/edit?site=nl');
-            });
+            ->assertJsonCount(2, 'formConfigs')
+            ->assertJson(['formConfigs' => [
+                ['title' => 'Form One', 'edit_url' => url('/cp/hubspot/form_one/edit?site=nl')],
+                ['title' => 'Form Two', 'edit_url' => url('/cp/hubspot/form_two/edit?site=nl')],
+            ]]);
     }
 }

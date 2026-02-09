@@ -31,12 +31,12 @@ class EditFormConfigTest extends TestCase
         Http::fake(); // Fake any HTTP requests to the HubSpot API.
 
         $this->actingAs($user)
-            ->get($formConfig->editUrl())
+            ->getJson($formConfig->editUrl())
             ->assertOk()
-            ->assertViewHas('values', collect([
+            ->assertJson(['values' => [
                 'email_field' => 'email',
                 'consent_field' => 'consent',
                 'contact_properties' => [],
-            ]));
+            ]]);
     }
 }
