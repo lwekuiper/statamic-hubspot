@@ -1,44 +1,46 @@
+<script setup>
+import { ref, watch, onMounted } from 'vue';
+import axios from 'axios';
+
+const props = defineProps({
+    value: { required: true },
+});
+
+const emit = defineEmits(['update:value']);
+
+const selected = ref(null);
+const fields = ref([]);
+
+watch(selected, (val) => {
+    emit('update:value', val);
+});
+
+onMounted(() => {
+    selected.value = props.value;
+    refreshFields();
+});
+
+function refreshFields() {
+    axios
+        .get(cp_url('/hubspot/contact-properties'))
+        .then(response => {
+            fields.value = response.data;
+        })
+        .catch(() => { fields.value = []; });
+}
+</script>
+
 <template>
     <div class="hubspot-contact-properties-fieldtype-wrapper">
-        <v-select
-            append-to-body
-            v-model="value"
-            :clearable="true"
+        <ui-combobox
+            class="w-full"
+            v-model="selected"
             :options="fields"
-            :reduce="(option) => option.id"
-            :placeholder="__('Choose...')"
+            optionValue="id"
+            optionLabel="label"
+            :label="__('Choose...')"
+            :clearable="true"
             :searchable="true"
-            @input="$emit('input', $event)"
         />
     </div>
 </template>
-
-<script>
-export default {
-
-    mixins: [Fieldtype],
-
-    inject: ['storeName'],
-
-    data() {
-        return {
-            fields: [],
-        }
-    },
-
-    mounted() {
-        this.refreshFields();
-    },
-
-    methods: {
-        refreshFields() {
-            this.$axios
-                .get(cp_url('/hubspot/contact-properties'))
-                .then(response => {
-                    this.fields = response.data;
-                })
-                .catch(() => { this.fields = []; });
-        }
-    }
-};
-</script>

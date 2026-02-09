@@ -1,84 +1,85 @@
-<template>
-    <div>
+<script setup>
+import { Header, Listing, DropdownItem } from '@statamic/cms/ui';
+import { Link } from '@statamic/cms/inertia';
+import SiteSelector from '../SiteSelector.vue';
+import { ref } from 'vue';
+import axios from 'axios';
+import HubSpotIcon from '../../../svg/hubspot.svg?raw';
 
-        <header class="mb-6">
-            <div class="flex items-center">
-                <h1 class="flex-1" v-text="__('HubSpot')" />
+const props = defineProps({
+    createFormUrl: { type: String, required: true },
+    initialFormConfigs: { type: Array, required: true },
+    initialLocalizations: { type: Array, required: true },
+    initialSite: { type: String, required: true },
+});
 
-                <site-selector
-                    v-if="localizations.length > 1"
-                    class="rtl:ml-4 ltr:mr-4"
-                    :sites="localizations"
-                    :value="site"
-                    @input="localizationSelected"
-                />
+const rows = ref(props.initialFormConfigs);
+const localizations = ref(props.initialLocalizations);
+const site = ref(props.initialSite);
+const loading = ref(false);
 
-                <a :href="createFormUrl" class="btn-primary" v-text="__('Create Form')" />
-            </div>
-        </header>
+const columns = [
+    { field: 'form', label: __('Form'), visible: true },
+    { field: 'active', label: __('Active'), visible: true },
+];
 
-        <data-list :rows="rows" :columns="columns">
-            <div class="card overflow-hidden p-0">
-                <data-list-table>
-                    <template slot="cell-form" slot-scope="{ row: form }">
-                        <a :href="form.edit_url">{{ form.title }}</a>
-                    </template>
-                    <template slot="actions" slot-scope="{ row: form }">
-                        <dropdown-list>
-                            <dropdown-item :text="__('Edit')" :redirect="form.edit_url" />
-                        </dropdown-list>
-                    </template>
-                </data-list-table>
-            </div>
-        </data-list>
+function localizationSelected(handle) {
+    const localization = localizations.value.find(l => l.handle === handle);
+    if (!localization || localization.active) return;
 
-    </div>
-</template>
+    loading.value = true;
 
-<script>
-import Listing from '../../../../vendor/statamic/cms/resources/js/components/Listing.vue'
-import SiteSelector from '../../../../vendor/statamic/cms/resources/js/components/SiteSelector.vue';
-
-export default {
-
-    mixins: [Listing],
-
-    components: {SiteSelector},
-
-    props: {
-        createFormUrl: { type: String, required: true },
-        initialFormConfigs: { type: Array, required: true },
-        initialLocalizations: { type: Array, required: true },
-        initialSite: { type: String, required: true },
-    },
-
-    data() {
-        return {
-            rows: _.clone(this.initialFormConfigs),
-            columns: [
-                { label: __('Form'), field: 'form' },
-                { label: __('Active'), field: 'active' },
-            ],
-            localizations: _.clone(this.initialLocalizations),
-            site: this.initialSite,
-        }
-    },
-
-    methods: {
-        localizationSelected(localization) {
-            if (localization.active) return;
-
-            this.loading = true;
-
-            this.$axios.get(localization.url).then(response => {
-                const data = response.data;
-                this.rows = data.formConfigs;
-                this.localizations = data.localizations;
-                this.site = localization.handle;
-                this.loading = false;
-            })
-        },
-    },
-
+    axios.get(localization.url).then(response => {
+        rows.value = response.data.formConfigs;
+        localizations.value = response.data.localizations;
+        site.value = localization.handle;
+        loading.value = false;
+    });
 }
 </script>
+
+<template>
+    <div class="max-w-5xl mx-auto">
+        <Header :title="__('HubSpot')" :icon="HubSpotIcon">
+            <SiteSelector
+                v-if="localizations.length > 1"
+                :sites="localizations"
+                :model-value="site"
+                @update:model-value="localizationSelected"
+            />
+
+            <ui-button
+                :href="createFormUrl"
+                :text="__('Create Form')"
+                variant="primary"
+            />
+        </Header>
+
+        <Listing
+            v-if="!loading"
+            :items="rows"
+            :columns="columns"
+            :allow-presets="false"
+            :allow-customizing-columns="false"
+            :allow-search="false"
+            preferences-prefix="hubspot"
+        >
+            <template #cell-form="{ row: form }">
+                <Link :href="form.edit_url" class="flex items-center gap-2">
+                    {{ form.title }}
+                </Link>
+            </template>
+            <template #prepended-row-actions="{ row: form }">
+                <DropdownItem
+                    :text="__('Edit')"
+                    :href="form.edit_url"
+                    icon="edit"
+                />
+            </template>
+        </Listing>
+
+        <div v-else class="card p-4 text-center text-gray-500">
+            {{ __('Loading...') }}
+        </div>
+    </div>
+</template>
