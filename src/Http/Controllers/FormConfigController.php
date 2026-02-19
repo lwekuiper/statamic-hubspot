@@ -183,6 +183,14 @@ class FormConfigController extends CpController
      */
     private function getBlueprint(): BlueprintContract
     {
-        return Blueprint::find('statamic-hubspot::config');
+        if ($blueprint = Blueprint::find('statamic-hubspot::config')) {
+            return $blueprint;
+        }
+
+        $path = realpath(__DIR__.'/../../../resources/blueprints/config.yaml');
+
+        return Blueprint::make()->setContents(
+            \Statamic\Facades\YAML::parse(file_get_contents($path))
+        );
     }
 }
