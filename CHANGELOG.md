@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1 (2026-02-26)
+
+### Fixed
+- Fix blueprint loading failure where `getBlueprint()` returned `null` because `Blueprint::find()` could not locate the YAML blueprint file. The blueprint is now built programmatically.
+
 ## 2.0.0 (2025-07-18)
 
 ### Breaking Changes
