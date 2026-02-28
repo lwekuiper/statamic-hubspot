@@ -2,6 +2,11 @@
 
 All notable changes to `statamic-hubspot` will be documented in this file.
 
+## 2.0.2 (2026-02-28)
+
+### Fixed
+- Namespace Stache store handle from `form-configs` to `hubspot-form-configs` to avoid conflicts when multiple form-config addons are installed. Run `php please stache:clear` after upgrading.
+
 ## 2.0.1 (2026-02-26)
 
 ### Fixed
