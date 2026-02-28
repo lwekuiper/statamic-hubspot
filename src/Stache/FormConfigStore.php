@@ -18,7 +18,7 @@ class FormConfigStore extends BasicStore
 
     public function key()
     {
-        return 'form-configs';
+        return 'hubspot-form-configs';
     }
 
     public function makeItemFromFile($path, $contents)

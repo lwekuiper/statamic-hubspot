@@ -80,7 +80,7 @@ class FormConfig implements Localization
     public function path()
     {
         return vsprintf('%s/%s%s.%s', [
-            rtrim(Stache::store('form-configs')->directory(), '/'),
+            rtrim(Stache::store('hubspot-form-configs')->directory(), '/'),
             Site::multiEnabled() ? $this->locale().'/' : '',
             $this->handle(),
             'yaml',
