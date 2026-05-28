@@ -23,8 +23,8 @@ A powerful Statamic addon that seamlessly integrates your forms with HubSpot, fe
 ## Requirements
 
 - **PHP**: 8.3 or higher
-- **Laravel**: 12.0 or higher
-- **Statamic**: 6.0 or higher
+- **Laravel**: 12.0 or 13.0
+- **Statamic**: 6.5 or higher
 - **HubSpot Account**: With a Private App access token
 
 > **Note**: For Statamic 4.x and 5.x support, use version 1.x of this addon.
