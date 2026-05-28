@@ -2,6 +2,18 @@
 
 All notable changes to `statamic-hubspot` will be documented in this file.
 
+## 2.1.0 (2026-05-28)
+
+### What's new
+- Laravel 13 support
+
+### What's changed
+- Minimum PHP version raised to 8.3 (required by Laravel 13)
+- Minimum Statamic version raised to 6.5 (first version with Laravel 13 support)
+
+### Fixed
+- FormConfig entries no longer fail to deserialize from Laravel 13's hardened cache (allowlist registered via Statamic's `registerSerializableClasses` API).
+
 ## 2.0.2 (2026-02-28)
 
 ### Fixed
