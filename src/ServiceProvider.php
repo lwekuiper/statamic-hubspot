@@ -3,6 +3,7 @@
 namespace Lwekuiper\StatamicHubspot;
 
 use Lwekuiper\StatamicHubspot\Connectors\HubSpotConnector;
+use Lwekuiper\StatamicHubspot\Data\FormConfig;
 use Lwekuiper\StatamicHubspot\Fieldtypes\HubSpotContactProperties;
 use Lwekuiper\StatamicHubspot\Fieldtypes\StatamicFormFields;
 use Lwekuiper\StatamicHubspot\Listeners\AddFromSubmission;
@@ -38,6 +39,10 @@ class ServiceProvider extends AddonServiceProvider
 
     public function register()
     {
+        $this->registerSerializableClasses([
+            FormConfig::class,
+        ]);
+
         $this->app->singleton(FormConfigRepository::class, function () {
             return new FormConfigRepository($this->app['stache']);
         });
