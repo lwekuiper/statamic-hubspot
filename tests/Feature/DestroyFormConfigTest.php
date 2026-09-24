@@ -35,4 +35,23 @@ class DestroyFormConfigTest extends TestCase
 
         $this->assertCount(0, FormConfig::all());
     }
+
+    #[Test]
+    public function it_denies_access_if_you_dont_have_permission()
+    {
+        $this->setTestRoles(['test' => ['access cp']]);
+        $user = User::make()->assignRole('test')->save();
+
+        $form = tap(Form::make('test'))->save();
+
+        $formConfig = FormConfig::make()->form($form)->locale('default');
+        $formConfig->emailField('email');
+        $formConfig->save();
+
+        $this->actingAs($user)
+            ->delete($formConfig->deleteUrl())
+            ->assertUnauthorized();
+
+        $this->assertCount(1, FormConfig::all());
+    }
 }

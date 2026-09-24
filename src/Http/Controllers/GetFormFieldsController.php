@@ -2,6 +2,7 @@
 
 namespace Lwekuiper\StatamicHubspot\Http\Controllers;
 
+use Statamic\Facades\User;
 use Statamic\Fields\Field;
 use Statamic\Forms\Form;
 use Statamic\Http\Controllers\Controller;
@@ -10,6 +11,9 @@ class GetFormFieldsController extends Controller
 {
     public function __invoke(Form $form): array
     {
+        $user = User::current();
+        abort_unless($user->isSuper() || $user->hasPermission('configure forms'), 401);
+
         return $form->fields()
             ->map(fn (Field $field, string $handle) => [
                 'id' => $handle,

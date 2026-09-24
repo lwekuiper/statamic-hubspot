@@ -45,4 +45,19 @@ class UpdateFormConfigTest extends TestCase
         $this->assertEquals('subscriber_email', $formConfig->emailField());
         $this->assertEquals('accepts_marketing', $formConfig->consentField());
     }
+
+    #[Test]
+    public function it_denies_access_if_you_dont_have_permission()
+    {
+        $this->setTestRoles(['test' => ['access cp']]);
+        $user = User::make()->assignRole('test')->save();
+
+        $form = tap(Form::make('test_form')->title('Test Form'))->save();
+
+        $this->actingAs($user)
+            ->patchJson(cp_route('hubspot.update', ['form' => $form->handle()]), ['email_field' => 'email'])
+            ->assertUnauthorized();
+
+        $this->assertCount(0, FormConfig::all());
+    }
 }

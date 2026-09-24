@@ -39,4 +39,17 @@ class EditFormConfigTest extends TestCase
                 'contact_properties' => [],
             ]]);
     }
+
+    #[Test]
+    public function it_denies_access_if_you_dont_have_permission()
+    {
+        $this->setTestRoles(['test' => ['access cp']]);
+        $user = User::make()->assignRole('test')->save();
+
+        $form = tap(Form::make('test_form')->title('Test Form'))->save();
+
+        $this->actingAs($user)
+            ->getJson(cp_route('hubspot.edit', ['form' => $form->handle()]))
+            ->assertUnauthorized();
+    }
 }

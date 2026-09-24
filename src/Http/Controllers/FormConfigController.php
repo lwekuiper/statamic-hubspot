@@ -18,8 +18,7 @@ class FormConfigController extends CpController
 {
     public function index(Request $request)
     {
-        $user = User::current();
-        abort_unless($user->isSuper() || $user->hasPermission('configure forms'), 401);
+        $this->authorizeConfigure();
 
         [$site, $edition] = $this->getAddonContext($request);
 
@@ -77,6 +76,8 @@ class FormConfigController extends CpController
 
     public function edit(Request $request, Form $form)
     {
+        $this->authorizeConfigure();
+
         [$site, $edition] = $this->getAddonContext($request);
 
         $blueprint = $this->getBlueprint();
@@ -129,6 +130,8 @@ class FormConfigController extends CpController
 
     public function update(Request $request, Form $form)
     {
+        $this->authorizeConfigure();
+
         [$site] = $this->getAddonContext($request);
 
         $blueprint = $this->getBlueprint();
@@ -153,6 +156,8 @@ class FormConfigController extends CpController
 
     public function destroy(Request $request, Form $form)
     {
+        $this->authorizeConfigure();
+
         [$site] = $this->getAddonContext($request);
 
         if (! $formConfig = FormConfig::find($form->handle(), $site)) {
@@ -176,6 +181,13 @@ class FormConfigController extends CpController
             : Site::default()->handle();
 
         return [$site, $edition];
+    }
+
+    private function authorizeConfigure(): void
+    {
+        $user = User::current();
+
+        abort_unless($user->isSuper() || $user->hasPermission('configure forms'), 401);
     }
 
     /**
