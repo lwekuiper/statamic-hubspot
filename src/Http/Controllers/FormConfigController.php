@@ -180,6 +180,9 @@ class FormConfigController extends CpController
             ? $request->site ?? Site::selected()->handle()
             : Site::default()->handle();
 
+        // The handle becomes a directory in the config file path.
+        abort_unless(Site::get($site), 404);
+
         return [$site, $edition];
     }
 

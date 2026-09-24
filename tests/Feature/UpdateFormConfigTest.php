@@ -60,4 +60,24 @@ class UpdateFormConfigTest extends TestCase
 
         $this->assertCount(0, FormConfig::all());
     }
+
+    #[Test]
+    public function it_rejects_a_site_that_does_not_exist()
+    {
+        $this->setSites([
+            'en' => ['url' => '/', 'locale' => 'en'],
+            'nl' => ['url' => '/nl/', 'locale' => 'nl'],
+        ]);
+        $this->setProEdition();
+
+        $user = tap(User::make()->makeSuper())->save();
+
+        $form = tap(Form::make('test_form')->title('Test Form'))->save();
+
+        $this->actingAs($user)
+            ->patchJson(cp_route('hubspot.update', ['form' => $form->handle(), 'site' => '../forms']), ['email_field' => 'email'])
+            ->assertNotFound();
+
+        $this->assertCount(0, FormConfig::all());
+    }
 }
