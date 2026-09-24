@@ -39,7 +39,7 @@ The addon is available in two editions:
 
 - PHP 8.3+
 - Laravel 12.0 or 13.0
-- Statamic 6.5+
+- Statamic 6.10+
 - A HubSpot account with a Private App access token
 
 For Statamic 4.x/5.x support, use version 1.x of this addon.
