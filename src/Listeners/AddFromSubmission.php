@@ -11,6 +11,7 @@ use Statamic\Events\SubmissionCreated;
 use Statamic\Facades\Addon;
 use Statamic\Facades\Site;
 use Statamic\Forms\Submission;
+use Throwable;
 
 class AddFromSubmission
 {
@@ -24,7 +25,7 @@ class AddFromSubmission
         $this->config = collect();
     }
 
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->data->get($this->config->get('email_field', 'email'));
     }
@@ -70,8 +71,15 @@ class AddFromSubmission
             return;
         }
 
-        if (! $contact = $this->createOrUpdateContact()) {
+        if (! $this->getEmail()) {
             return;
+        }
+
+        // Statamic dispatches this event before sending the form's emails and responding to the visitor.
+        try {
+            $this->createOrUpdateContact();
+        } catch (Throwable $e) {
+            report($e);
         }
     }
 

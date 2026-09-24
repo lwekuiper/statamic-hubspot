@@ -2,7 +2,10 @@
 
 namespace Lwekuiper\StatamicHubspot\Tests\Listeners;
 
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Exceptions;
+use Illuminate\Support\Facades\Http;
 use Lwekuiper\StatamicHubspot\Facades\FormConfig;
 use Lwekuiper\StatamicHubspot\Listeners\AddFromSubmission;
 use Lwekuiper\StatamicHubspot\Tests\TestCase;
@@ -213,5 +216,42 @@ class AddFromSubmissionTest extends TestCase
             'skills' => 'PHP, JavaScript, Laravel',
             'mixed_field' => 'Valid, Also Valid',
         ], $contactData);
+    }
+
+    #[Test]
+    public function it_skips_submissions_without_an_email()
+    {
+        Http::fake();
+
+        $form = tap(Form::make('contact_us')->title('Contact Us'))->save();
+        $submission = $form->makeSubmission();
+        $submission->data(['name' => 'John Doe']);
+
+        $formConfig = FormConfig::make()->form($form)->locale('default');
+        $formConfig->emailField('email');
+        $formConfig->save();
+
+        (new AddFromSubmission)->handle(new SubmissionCreated($submission));
+
+        Http::assertNothingSent();
+    }
+
+    #[Test]
+    public function it_reports_instead_of_throwing_when_hubspot_is_unreachable()
+    {
+        Exceptions::fake();
+        Http::fake(fn () => throw new ConnectionException('Connection timed out'));
+
+        $form = tap(Form::make('contact_us')->title('Contact Us'))->save();
+        $submission = $form->makeSubmission();
+        $submission->data(['email' => 'john@example.com']);
+
+        $formConfig = FormConfig::make()->form($form)->locale('default');
+        $formConfig->emailField('email');
+        $formConfig->save();
+
+        (new AddFromSubmission)->handle(new SubmissionCreated($submission));
+
+        Exceptions::assertReported(ConnectionException::class);
     }
 }
