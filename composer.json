@@ -9,7 +9,13 @@
     "require-dev": {
         "orchestra/testbench": "^10.0 || ^11.0"
     },
-    "description": "Subscribe forms to HubSpot",
+    "description": "Sync Statamic form submissions to HubSpot contacts, with property mapping and consent handling.",
+    "keywords": ["statamic", "statamic-addon", "hubspot", "crm", "forms", "marketing"],
+    "homepage": "https://github.com/lwekuiper/statamic-hubspot",
+    "support": {
+        "issues": "https://github.com/lwekuiper/statamic-hubspot/issues",
+        "source": "https://github.com/lwekuiper/statamic-hubspot"
+    },
     "authors": [
         {
             "name": "Laurens Kuiper",
