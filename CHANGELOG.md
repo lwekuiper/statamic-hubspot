@@ -2,6 +2,16 @@
 
 All notable changes to `statamic-hubspot` will be documented in this file.
 
+## 2.1.1 (2026-11-05)
+
+### What's changed
+- Minimum Statamic version raised to 6.10. Version 2.1.0 calls `registerSerializableClasses`, which does not exist before 6.10, so every request failed on Statamic 6.5 to 6.9.
+
+### Fixed
+- Every HubSpot control panel route, including the form field and contact property endpoints, now requires the `configure forms` permission. Before, only the listing page checked it.
+- Control panel requests with an unknown `site` handle are rejected. The handle is used in the form config file path, so it is no longer possible to write a config outside the HubSpot folder.
+- Form submissions with an empty email field are skipped, and a failed HubSpot request no longer stops the submission. The error is reported to your log, the visitor sees the normal success response and the notification emails are still sent.
+
 ## 2.1.0 (2026-05-28)
 
 ### What's new
