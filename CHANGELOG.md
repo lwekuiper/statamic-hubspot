@@ -2,7 +2,7 @@
 
 All notable changes to `statamic-hubspot` will be documented in this file.
 
-## 2.1.1 (2026-11-05)
+## 2.1.1 (2026-11-22)
 
 ### What's changed
 - Minimum Statamic version raised to 6.10. Version 2.1.0 calls `registerSerializableClasses`, which does not exist before 6.10, so every request failed on Statamic 6.5 to 6.9.
