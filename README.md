@@ -110,3 +110,5 @@ This addon is a third-party integration and is **not** affiliated with, endorsed
 ---
 
 Made with love for the Statamic community
+
+Built and maintained by [Laurens Kuiper](https://www.laurenskuiper.com/?ref=addon-readme), freelance Statamic, Laravel and Filament developer. Available for custom integrations.
