@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.4 (2026-11-25)
+
+### Fixed
+- The HubSpot item under Tools in the control panel navigation is only shown to users with the `configure forms` permission. Before, any user who could view form submissions saw it, and its pages then refused them.
+
 ## 1.0.2 (2026-02-28)
 
 ### Fixed
