@@ -2,6 +2,11 @@
 
 All notable changes to `statamic-hubspot` will be documented in this file.
 
+## 2.1.2 (2026-11-25)
+
+### Fixed
+- The HubSpot item under Tools in the control panel navigation is only shown to users with the `configure forms` permission. Before, any user who could view form submissions saw it, and its pages then refused them.
+
 ## 2.1.1 (2026-11-22)
 
 ### What's changed
